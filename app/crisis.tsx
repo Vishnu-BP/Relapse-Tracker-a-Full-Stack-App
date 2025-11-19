@@ -1,18 +1,21 @@
 import { useRouter } from 'expo-router';
-import { Heart, ShieldCheck, Wind, X } from 'lucide-react-native';
+import { Anchor, Heart, ShieldCheck, Wind, X } from 'lucide-react-native';
 import React, { useEffect, useRef, useState } from 'react';
 import {
-    Animated,
-    Dimensions,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View
+  Animated,
+  Dimensions,
+  Platform,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const { width } = Dimensions.get('window');
 
+// Motivation & Reasons Data (Unchanged)
 const MOTIVATION = [
   "This urge will pass. You are stronger than it.",
   "Think about why you started.",
@@ -35,7 +38,7 @@ export default function CrisisScreen() {
   const [textIndex, setTextIndex] = useState(0);
   const [mode, setMode] = useState<'breathe' | 'reasons'>('breathe');
 
-  // 1. Breathing Animation Loop (Inhale 4s, Hold 2s, Exhale 4s)
+  // Logic: Breathing Animation Loop (Unchanged)
   useEffect(() => {
     const breathe = Animated.loop(
       Animated.sequence([
@@ -54,7 +57,6 @@ export default function CrisisScreen() {
     );
     breathe.start();
 
-    // Rotate quotes every 8 seconds
     const interval = setInterval(() => {
       setTextIndex((prev) => (prev + 1) % MOTIVATION.length);
     }, 8000);
@@ -67,114 +69,286 @@ export default function CrisisScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="dark-content" backgroundColor="#F8FAFC" />
       
-      {/* Header */}
+      {/* Header - Clean & Minimal */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>SOS MODE</Text>
+        <View>
+            <Text style={styles.headerSubtitle}>Stay Strong</Text>
+            <Text style={styles.headerTitle}>SOS Support</Text>
+        </View>
         <TouchableOpacity onPress={() => router.back()} style={styles.closeBtn}>
-          <X color="#fff" size={24} />
+          <X color="#64748B" size={24} />
         </TouchableOpacity>
       </View>
 
-      {/* Tab Switcher */}
-      <View style={styles.tabs}>
-        <TouchableOpacity 
-          onPress={() => setMode('breathe')} 
-          style={[styles.tab, mode === 'breathe' && styles.activeTab]}
-        >
-          <Wind color={mode === 'breathe' ? '#000' : '#666'} size={20} />
-          <Text style={[styles.tabText, mode === 'breathe' && styles.activeTabText]}>Breathe</Text>
-        </TouchableOpacity>
-        <TouchableOpacity 
-          onPress={() => setMode('reasons')} 
-          style={[styles.tab, mode === 'reasons' && styles.activeTab]}
-        >
-          <ShieldCheck color={mode === 'reasons' ? '#000' : '#666'} size={20} />
-          <Text style={[styles.tabText, mode === 'reasons' && styles.activeTabText]}>My Reasons</Text>
-        </TouchableOpacity>
+      {/* Tab Switcher - Pill Style */}
+      <View style={styles.tabsContainer}>
+        <View style={styles.tabsBackground}>
+            <TouchableOpacity 
+            onPress={() => setMode('breathe')} 
+            style={[styles.tab, mode === 'breathe' && styles.activeTab]}
+            >
+            <Wind color={mode === 'breathe' ? '#0EA5E9' : '#94A3B8'} size={18} strokeWidth={2.5} />
+            <Text style={[styles.tabText, mode === 'breathe' && styles.activeTabText]}>Breathe</Text>
+            </TouchableOpacity>
+            
+            <TouchableOpacity 
+            onPress={() => setMode('reasons')} 
+            style={[styles.tab, mode === 'reasons' && styles.activeTab]}
+            >
+            <ShieldCheck color={mode === 'reasons' ? '#0EA5E9' : '#94A3B8'} size={18} strokeWidth={2.5} />
+            <Text style={[styles.tabText, mode === 'reasons' && styles.activeTabText]}>My Reasons</Text>
+            </TouchableOpacity>
+        </View>
       </View>
 
       <View style={styles.content}>
         {mode === 'breathe' ? (
           // BREATHING VIEW
           <View style={styles.centerContainer}>
-             <Text style={styles.instruction}>Inhale... Hold... Exhale</Text>
+             
+             {/* Text Guide */}
+             <View style={styles.instructionContainer}>
+                 <Text style={styles.instructionLabel}>Focus on the circle</Text>
+                 <Text style={styles.instructionSub}>Inhale as it grows, exhale as it shrinks</Text>
+             </View>
+
+             {/* Visual Animation */}
              <View style={styles.circleWrapper}>
-                {/* The Pulsing Circles */}
+                {/* Outer Ripple */}
                 <Animated.View 
                   style={[
                     styles.breathingCircle, 
+                    { 
+                        transform: [{ scale: scaleAnim }],
+                        opacity: scaleAnim.interpolate({
+                            inputRange: [1, 1.8],
+                            outputRange: [0.6, 0] // Fade out as it expands
+                        })
+                    }
+                  ]} 
+                />
+                {/* Main Breathing Body */}
+                <Animated.View 
+                  style={[
+                    styles.breathingCircleCore, 
                     { transform: [{ scale: scaleAnim }] }
                   ]} 
                 />
-                <Animated.View 
-                  style={[
-                    styles.breathingCircle, 
-                    { transform: [{ scale: scaleAnim }], opacity: 0.3, width: 250, height: 250 }
-                  ]} 
-                />
+                {/* Center Anchor */}
+                <View style={styles.centerAnchor}>
+                    <Anchor color="#fff" size={24} />
+                </View>
              </View>
-             <Text style={styles.quote}>"{MOTIVATION[textIndex]}"</Text>
+
+             {/* Dynamic Quote */}
+             <View style={styles.quoteContainer}>
+                <Text style={styles.quote}>"{MOTIVATION[textIndex]}"</Text>
+             </View>
           </View>
         ) : (
           // REASONS VIEW
           <View style={styles.reasonsContainer}>
+            <Text style={styles.reasonsTitle}>Why I am doing this</Text>
             {REASONS.map((reason, index) => (
               <View key={index} style={styles.reasonCard}>
-                <Heart color="#EF4444" fill="#EF4444" size={20} />
+                <View style={styles.iconContainer}>
+                    <Heart color="#EF4444" fill="#EF4444" size={20} />
+                </View>
                 <Text style={styles.reasonText}>{reason}</Text>
               </View>
             ))}
-            <Text style={styles.subtext}>Remember why you started.</Text>
+            <Text style={styles.subtext}>Tap into your "Why". It is stronger than the urge.</Text>
           </View>
         )}
       </View>
 
-      {/* Bottom Button */}
-      <TouchableOpacity style={styles.exitButton} onPress={() => router.back()}>
-        <Text style={styles.exitText}>I'm Feeling Better</Text>
-      </TouchableOpacity>
+      {/* Bottom Button - Soft & Encouraging */}
+      <View style={styles.footer}>
+        <TouchableOpacity style={styles.exitButton} onPress={() => router.back()}>
+            <Text style={styles.exitText}>I'm Feeling Better</Text>
+        </TouchableOpacity>
+      </View>
 
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#111827' }, // Very dark blue/black
-  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 20 },
-  headerTitle: { color: '#fff', fontSize: 20, fontWeight: 'bold', letterSpacing: 2 },
-  closeBtn: { padding: 8, backgroundColor: '#374151', borderRadius: 20 },
+  // Layout & Background
+  container: { 
+    flex: 1, 
+    backgroundColor: '#F8FAFC' // Light cool gray background
+  },
+  
+  // Header
+  header: { 
+    flexDirection: 'row', 
+    justifyContent: 'space-between', 
+    alignItems: 'center', 
+    paddingHorizontal: 24,
+    paddingVertical: 16
+  },
+  headerSubtitle: {
+    color: '#64748B',
+    fontSize: 14,
+    fontWeight: '600',
+    textTransform: 'uppercase',
+    letterSpacing: 1
+  },
+  headerTitle: { 
+    color: '#0F172A', 
+    fontSize: 28, 
+    fontWeight: '800', 
+  },
+  closeBtn: { 
+    padding: 10, 
+    backgroundColor: '#E2E8F0', 
+    borderRadius: 50 
+  },
   
   // Tabs
-  tabs: { flexDirection: 'row', justifyContent: 'center', gap: 12, marginBottom: 40 },
-  tab: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 8, paddingHorizontal: 16, borderRadius: 20, backgroundColor: '#1F2937' },
-  activeTab: { backgroundColor: '#fff' },
-  tabText: { color: '#9CA3AF', fontWeight: '600' },
-  activeTabText: { color: '#000' },
+  tabsContainer: {
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  tabsBackground: {
+    flexDirection: 'row', 
+    padding: 4, 
+    borderRadius: 30, 
+    backgroundColor: '#E2E8F0', // Darker gray for tab track
+    width: '90%'
+  },
+  tab: { 
+    flex: 1, 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    justifyContent: 'center',
+    gap: 8, 
+    paddingVertical: 12, 
+    borderRadius: 25, 
+  },
+  activeTab: { 
+    backgroundColor: '#fff',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 3,
+  },
+  tabText: { 
+    color: '#64748B', 
+    fontWeight: '600',
+    fontSize: 15
+  },
+  activeTabText: { 
+    color: '#0F172A',
+    fontWeight: '700'
+  },
 
   content: { flex: 1, justifyContent: 'center' },
   
   // Breathe Styles
-  centerContainer: { alignItems: 'center' },
-  instruction: { color: '#9CA3AF', fontSize: 18, marginBottom: 40 },
-  circleWrapper: { height: 300, justifyContent: 'center', alignItems: 'center' },
-  breathingCircle: { 
-    width: 180, 
-    height: 180, 
-    borderRadius: 100, 
-    backgroundColor: '#60A5FA', // Calming Blue
-    opacity: 0.5,
-    position: 'absolute'
+  centerContainer: { alignItems: 'center', justifyContent: 'space-around', flex: 1 },
+  instructionContainer: { alignItems: 'center', marginTop: 20 },
+  instructionLabel: { color: '#334155', fontSize: 22, fontWeight: '700' },
+  instructionSub: { color: '#64748B', fontSize: 16, marginTop: 5 },
+  
+  circleWrapper: { 
+    height: 300, 
+    justifyContent: 'center', 
+    alignItems: 'center',
+    position: 'relative'
   },
-  quote: { color: '#fff', fontSize: 18, textAlign: 'center', paddingHorizontal: 40, marginTop: 40, fontStyle: 'italic' },
+  // The fading outer ripple
+  breathingCircle: { 
+    width: 220, 
+    height: 220, 
+    borderRadius: 110, 
+    backgroundColor: '#BAE6FD', // Very light blue
+    position: 'absolute',
+  },
+  // The main moving circle
+  breathingCircleCore: { 
+    width: 220, 
+    height: 220, 
+    borderRadius: 110, 
+    backgroundColor: '#7DD3FC', // Sky blue
+    opacity: 0.4,
+    position: 'absolute',
+  },
+  // The static center
+  centerAnchor: {
+    width: 60,
+    height: 60,
+    backgroundColor: '#0EA5E9', // Strong blue
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 10,
+    shadowColor: '#0EA5E9',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
+  },
+
+  quoteContainer: {
+    paddingHorizontal: 40,
+    height: 100, // Fixed height to prevent jumping
+    justifyContent: 'center'
+  },
+  quote: { 
+    color: '#475569', 
+    fontSize: 18, 
+    textAlign: 'center', 
+    fontStyle: 'italic',
+    lineHeight: 26,
+    fontWeight: '500'
+  },
 
   // Reasons Styles
-  reasonsContainer: { paddingHorizontal: 30 },
-  reasonCard: { flexDirection: 'row', alignItems: 'center', gap: 12, backgroundColor: '#1F2937', padding: 20, borderRadius: 12, marginBottom: 12 },
-  reasonText: { color: '#fff', fontSize: 18, fontWeight: '500' },
-  subtext: { color: '#6B7280', textAlign: 'center', marginTop: 20 },
+  reasonsContainer: { flex: 1, paddingHorizontal: 24, paddingTop: 20 },
+  reasonsTitle: { fontSize: 20, fontWeight: '700', color: '#334155', marginBottom: 20 },
+  
+  reasonCard: { 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    gap: 16, 
+    backgroundColor: '#fff', 
+    paddingVertical: 16,
+    paddingHorizontal: 20, 
+    borderRadius: 16, 
+    marginBottom: 12,
+    // Soft Shadow
+    shadowColor: '#64748B',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    elevation: 2,
+    borderWidth: 1,
+    borderColor: '#F1F5F9'
+  },
+  iconContainer: {
+    backgroundColor: '#FEF2F2', // Very light red
+    padding: 10,
+    borderRadius: 12,
+  },
+  reasonText: { color: '#334155', fontSize: 17, fontWeight: '600' },
+  subtext: { color: '#94A3B8', textAlign: 'center', marginTop: 30, fontSize: 14 },
 
   // Footer
-  exitButton: { margin: 20, backgroundColor: '#10B981', padding: 18, borderRadius: 16, alignItems: 'center' },
-  exitText: { color: '#fff', fontSize: 18, fontWeight: 'bold' },
+  footer: { padding: 24, paddingBottom: Platform.OS === 'ios' ? 0 : 24 },
+  exitButton: { 
+    backgroundColor: '#10B981', // Success Green
+    padding: 20, 
+    borderRadius: 20, 
+    alignItems: 'center',
+    shadowColor: '#10B981',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 5
+  },
+  exitText: { color: '#fff', fontSize: 18, fontWeight: 'bold', letterSpacing: 0.5 },
 });

@@ -64,53 +64,71 @@ export default function SignInScreen() {
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.content}>
         
-        {/* Header */}
+        {/* Header with motivational touch */}
         <View style={styles.header}>
-          <Text style={styles.title}>Welcome Back</Text>
-          <Text style={styles.subtitle}>Sign in to continue your journey</Text>
+          <View style={styles.logoContainer}>
+            <Text style={styles.logoEmoji}>🌱</Text>
+          </View>
+          <Text style={styles.title}>Welcome..!</Text>
+          <Text style={styles.subtitle}>Your journey to recovery continues here</Text>
         </View>
 
-        {/* Google Button */}
-        <TouchableOpacity style={styles.googleButton} onPress={onGooglePress}>
-          {/* Text-based icon for simplicity */}
-          <Text style={styles.googleButtonText}>G   Continue with Google</Text>
+        {/* Google Button with refined styling */}
+        <TouchableOpacity 
+          style={styles.googleButton} 
+          onPress={onGooglePress}
+          activeOpacity={0.7}
+        >
+          <View style={styles.googleIconContainer}>
+            <Text style={styles.googleIcon}>G</Text>
+          </View>
+          <Text style={styles.googleButtonText}>Continue with Google</Text>
         </TouchableOpacity>
 
-        {/* Divider */}
+        {/* Elegant Divider */}
         <View style={styles.dividerContainer}>
           <View style={styles.dividerLine} />
-          <Text style={styles.dividerText}>or</Text>
+          <Text style={styles.dividerText}>or sign in with email</Text>
           <View style={styles.dividerLine} />
         </View>
 
-        {/* Email Form */}
+        {/* Email Form with improved styling */}
         <View style={styles.form}>
-          <Text style={styles.label}>Email address</Text>
-          <TextInput
-            autoCapitalize="none"
-            style={styles.input}
-            value={emailAddress}
-            placeholder="Enter your email"
-            placeholderTextColor="#999"
-            onChangeText={setEmailAddress}
-          />
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Email address</Text>
+            <TextInput
+              autoCapitalize="none"
+              keyboardType="email-address"
+              style={styles.input}
+              value={emailAddress}
+              placeholder="your.email@example.com"
+              placeholderTextColor="#A0A0A0"
+              onChangeText={setEmailAddress}
+            />
+          </View>
           
-          <Text style={[styles.label, {marginTop: 15}]}>Password</Text>
-          <TextInput
-            style={styles.input}
-            value={password}
-            placeholder="Enter your password"
-            placeholderTextColor="#999"
-            secureTextEntry={true}
-            onChangeText={setPassword}
-          />
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Password</Text>
+            <TextInput
+              style={styles.input}
+              value={password}
+              placeholder="Enter your password"
+              placeholderTextColor="#A0A0A0"
+              secureTextEntry={true}
+              onChangeText={setPassword}
+            />
+          </View>
 
-          <TouchableOpacity style={styles.primaryButton} onPress={onSignInPress}>
+          <TouchableOpacity 
+            style={styles.primaryButton} 
+            onPress={onSignInPress}
+            activeOpacity={0.8}
+          >
             <Text style={styles.primaryButtonText}>Continue</Text>
           </TouchableOpacity>
         </View>
 
-        {/* Footer Link */}
+        {/* Footer Link with better spacing */}
         <View style={styles.footer}>
           <Text style={styles.footerText}>Don't have an account? </Text>
           <Link href="/(auth)/sign-up" asChild>
@@ -118,6 +136,11 @@ export default function SignInScreen() {
               <Text style={styles.link}>Sign up</Text>
             </TouchableOpacity>
           </Link>
+        </View>
+
+        {/* Motivational footer note */}
+        <View style={styles.motivationalFooter}>
+          <Text style={styles.motivationalText}>Every step forward is progress</Text>
         </View>
         
       </KeyboardAvoidingView>
@@ -128,7 +151,7 @@ export default function SignInScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff', // Light Background
+    backgroundColor: '#F8F9FC', // Soft blue-gray background
   },
   content: {
     flex: 1,
@@ -137,94 +160,161 @@ const styles = StyleSheet.create({
   },
   header: {
     alignItems: 'center',
-    marginBottom: 30,
+    marginBottom: 40,
+  },
+  logoContainer: {
+    width: 72,
+    height: 72,
+    borderRadius: 36,
+    backgroundColor: '#E8F5E9', // Light green background
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 20,
+    shadowColor: '#4CAF50',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  logoEmoji: {
+    fontSize: 36,
   },
   title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#1a1a1a',
-    marginBottom: 8,
+    fontSize: 32,
+    fontWeight: '700',
+    color: '#1A1A1A',
+    marginBottom: 10,
+    letterSpacing: -0.5,
   },
   subtitle: {
     fontSize: 16,
-    color: '#666',
+    color: '#6B7280',
     textAlign: 'center',
+    lineHeight: 22,
+    paddingHorizontal: 20,
   },
   googleButton: {
-    backgroundColor: '#fff',
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 8,
-    paddingVertical: 12,
+    flexDirection: 'row',
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1.5,
+    borderColor: '#E5E7EB',
+    borderRadius: 12,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
     alignItems: 'center',
-    marginBottom: 24,
-    // Shadow for depth
+    justifyContent: 'center',
+    marginBottom: 28,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
+    shadowOpacity: 0.04,
+    shadowRadius: 4,
     elevation: 2,
   },
+  googleIconContainer: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: '#F3F4F6',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 12,
+  },
+  googleIcon: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#4285F4',
+  },
   googleButtonText: {
-    color: '#1a1a1a',
+    color: '#374151',
     fontSize: 16,
     fontWeight: '600',
   },
   dividerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 24,
+    marginBottom: 28,
   },
   dividerLine: {
     flex: 1,
     height: 1,
-    backgroundColor: '#eee',
+    backgroundColor: '#E5E7EB',
   },
   dividerText: {
-    color: '#999',
-    paddingHorizontal: 10,
-    fontSize: 14,
+    color: '#9CA3AF',
+    paddingHorizontal: 16,
+    fontSize: 13,
+    fontWeight: '500',
   },
   form: {
+    marginBottom: 24,
+  },
+  inputGroup: {
     marginBottom: 20,
   },
   label: {
-    color: '#333',
-    fontSize: 14,
-    marginBottom: 8,
-    fontWeight: '500',
+    color: '#374151',
+    fontSize: 15,
+    marginBottom: 10,
+    fontWeight: '600',
+    letterSpacing: -0.2,
   },
   input: {
-    backgroundColor: '#f9f9f9',
-    borderWidth: 1,
-    borderColor: '#e0e0e0',
-    color: '#1a1a1a',
-    borderRadius: 8,
-    padding: 12,
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1.5,
+    borderColor: '#E5E7EB',
+    color: '#1A1A1A',
+    borderRadius: 12,
+    padding: 16,
     fontSize: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.02,
+    shadowRadius: 2,
+    elevation: 1,
   },
   primaryButton: {
-    backgroundColor: '#007AFF',
-    borderRadius: 8,
-    paddingVertical: 14,
+    backgroundColor: '#10B981', // Calming green for recovery theme
+    borderRadius: 12,
+    paddingVertical: 16,
     alignItems: 'center',
-    marginTop: 24,
+    marginTop: 8,
+    shadowColor: '#10B981',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 4,
   },
   primaryButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
+    color: '#FFFFFF',
+    fontSize: 17,
+    fontWeight: '700',
+    letterSpacing: 0.3,
   },
   footer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginTop: 10,
+    marginTop: 16,
   },
   footerText: {
-    color: '#666',
+    color: '#6B7280',
+    fontSize: 15,
   },
   link: {
-    color: '#007AFF',
-    fontWeight: 'bold',
+    color: '#10B981',
+    fontWeight: '700',
+    fontSize: 15,
+  },
+  motivationalFooter: {
+    alignItems: 'center',
+    marginTop: 32,
+    paddingTop: 24,
+    borderTopWidth: 1,
+    borderTopColor: '#E5E7EB',
+  },
+  motivationalText: {
+    color: '#9CA3AF',
+    fontSize: 14,
+    fontStyle: 'italic',
+    letterSpacing: 0.2,
   },
 });
